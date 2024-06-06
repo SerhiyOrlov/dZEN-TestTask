@@ -1,0 +1,31 @@
+services:
+  web:
+    container_name: django
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py wait_for_db && 
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./app:/usr/src/app/
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./envDir/.env
+      - ./envDir/.env.db
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    env_file:
+      - ./envDir/.env.db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
