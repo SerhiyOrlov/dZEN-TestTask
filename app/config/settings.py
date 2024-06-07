@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'core',
-    'authentication'
+    'authentication',
     'posts',
     'users',
 ]
@@ -132,3 +132,5 @@ STATIC_URL = os.environ.get("STATIC_URL")
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
