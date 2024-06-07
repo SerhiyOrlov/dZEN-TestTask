@@ -6,7 +6,7 @@ from django.contrib.auth.models import (
 
 from django.db import models
 
-# from authentication.utils import AuthManager
+from authentication.utils import jwt_manager
 
 
 class UserManager(BaseUserManager):
@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
 	Needed for managing User objects.
 	"""
 
-	def create_user(self, username, email, password=None, confirmation_otp=None, ):
+	def create_user(self, username, email, password=None):
 		"""Creating a usual user without additonal permissions."""
 		if username is None:
 			raise TypeError('Users must have a username.')
@@ -46,11 +46,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 	username = models.CharField(db_index=True, max_length=255, unique=True)
 	email = models.EmailField(db_index=True, unique=True)
 	homepage = models.CharField(unique=True, blank=True, null=True)
-	is_active = models.BooleanField(default=False)
+	is_active = models.BooleanField(default=True)
 	is_staff = models.BooleanField(default=False)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
-	refresh_token = models.CharField(max_length=255, unique=True, blank=True, null=True)
+	_refresh_token = models.CharField(max_length=255, db_column='refresh_token', blank=True, null=True)
 	USERNAME_FIELD = 'email'  # Email instead username in user authentications
 	REQUIRED_FIELDS = ('username',)
 
@@ -66,16 +66,18 @@ class User(AbstractBaseUser, PermissionsMixin):
 	def get_short_name(self):
 		return self.username
 
-	# @property
-	# def set_access_token(self):
-	# 	"""Function with property decorator allows to add an edditional atribute to the class"""
-	# 	return AuthManager.generate_token(user_id=self.pk, token_type='access')
-	#
-	# @property
-	# def set_refresh_token(self):
-	# 	refresh_token = AuthManager.generate_token(user_id=self.pk, token_type='refresh')
-	# 	self.refresh_token = refresh_token
-	# 	self.save(update_fields=['refresh_token'])
-	# 	return refresh_token
+	@property
+	def access_token(self):
+		"""Function with property decorator allows to add an edditional atribute to the class"""
+		return jwt_manager.generate_token(user_id=self.pk, token_type='access')
 
-# Create your models here.
+	@property
+	def refresh_token(self):
+		return self._refresh_token
+
+	@refresh_token.setter
+	def refresh_token(self, value):
+		refresh_token = jwt_manager.generate_token(user_id=self.pk, token_type='refresh')
+		self._refresh_token = refresh_token
+		self.save(update_fields=['_refresh_token'])
+
