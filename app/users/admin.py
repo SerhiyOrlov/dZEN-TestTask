@@ -4,11 +4,17 @@ from .models import User
 
 
 class CustomUserAdmin(UserAdmin):
-    # Определите отображаемые поля пользователя
     fieldsets = (
         (None, {'fields': ('username', 'email', 'homepage',)}),
     )
-    list_display = ('username', 'email', 'is_staff', 'homepage')
+    list_display = ('username', 'email', 'is_staff', 'display_homepage',)
+
+    def display_homepage(self, obj):
+        return obj.homepage
+
+    display_homepage.short_description = 'Homepage'
 
 
 admin.site.register(User, CustomUserAdmin)
+
+

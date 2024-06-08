@@ -7,7 +7,7 @@ class IsOwnerOrAdmin(BasePermission):
 	"""
 	def has_object_permission(self, request, view, obj):
 		# Admins have access to the all objects
-		if request.user and request.user.is_staff:
+		if request.user.is_staff:
 			return True
 
 		# Owners have access to their objects.

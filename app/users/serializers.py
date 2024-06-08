@@ -18,7 +18,6 @@ class UserSerializer(serializers.ModelSerializer):
 			'username',
 			'email',
 			'password',
-			'homepage',
 		)
 		read_only_fields = ('access_token',)
 

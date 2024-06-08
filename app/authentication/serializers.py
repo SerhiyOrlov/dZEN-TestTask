@@ -24,6 +24,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 			password=validated_data['password'],
 		)
 		user.refresh_token = user.refresh_token
+		user.hompage = user.hompage
 		return user
 
 

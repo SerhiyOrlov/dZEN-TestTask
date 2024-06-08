@@ -7,4 +7,6 @@ router.register(r'user', UserViewSet, basename='user')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('user/profile/<str:username>/',
+         UserViewSet.as_view({'get': 'retrieve'}), name='user-profile'),
 ]
