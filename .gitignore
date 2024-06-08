@@ -78,8 +78,7 @@ target/
 celerybeat-schedule
 
 # dotenv
-envDir/.env
-envDir/.env.db
+
 
 # virtualenv
 venv/
@@ -188,3 +187,7 @@ fabric.properties
 migrations/
 
 .DS_Store
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
